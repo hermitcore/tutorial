@@ -61,7 +61,7 @@ jobs:
         CMD ["/hermit/httpd"]
         END
     - name: Build and push container
-      uses: docker/build-push-action@v3i
+      uses: docker/build-push-action@v3
       if: success() && github.ref == 'refs/heads/main'
       with:
         context: .
