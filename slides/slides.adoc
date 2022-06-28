@@ -41,7 +41,7 @@ https://www.acs.eonerc.rwth-aachen.de[https://www.acs.eonerc.rwth-aachen.de]
 
 == Introduction
 
-* Project startet with HermitCore footnote:[bibitem:[Lankes16]] for HPC
+* Project started with HermitCore footnote:[bibitem:[Lankes16]] for HPC
 * Combination of the Unikernel and Multi-Kernel to reduce the overhead
 ** The same binary is able to run
 *** in a VM (classical unikernel setup)
@@ -58,7 +58,7 @@ image::images/multikernel.png[HermitCore as Unikernel, width=40%]
 ** No TLB Shootdown
 * Runtime support
 ** Full C-library support (newlib)
-** Support of Pthreads and OpenMP
+** Support of pthreads and OpenMP
 ** Full integration within GCC ⇒ Support of C / C++, Fortran, Go
 
 === HermitCore
@@ -73,14 +73,14 @@ image::images/multikernel.png[HermitCore as Unikernel, width=40%]
 
 === Why Rust for Kernel Development?
 
-* Safe memory handling by Ownership & Borrowing
+* Safe memory handling through Ownership & Borrowing
 * Runtime is split into a OS-independent (`libcore`) and OS-dependent (`libstd`) part
 * By registration of a memory allocator, dynamic data structures are already supported
 ** Queues, heaps, and linked lists are part of `liballoc`
 * The Rust community want to create fast *and* safe code
 ** Support to bypass the strict rules => `unsafe` code
 * Already used in many https://rust-osdev.com[kernel-related projects]
-** Many projects share their code by Rust’s package manager
+** Many projects share their code via Rust’s package manager
 ** For instance, x86 specific data structures are shared in https://crates.io/crates/x86
 
 [source, Rust]
@@ -105,17 +105,16 @@ pub unsafe fn wrmsr(msr: u32, value: u64) {
 image::images/rustyhermit.png[RustyHermit, width=40%]
 
 * Removing the dependency to the original toolchain
-** No cross-compiler required
+** No cross-compiler building required
 ** Using of Rust’s default linker
 * The kernel is still a static library
-** Using of a C-based binary interface
-** Official part of Rust's https://github.com/rust-lang/rust/tree/master/library/std/src/sys/hermit[`libstd`]
+** C-based binary interface
+** Supports Rust's https://github.com/rust-lang/rust/tree/master/library/std/src/sys/hermit[`libstd`]
 
 == Requirements
 
 * https://www.rust-lang.org[Rust toolchain]
 ** Installing Rust on Unix
-** Please install the `stable` toolchain
 
 [source, shell]
 ----
@@ -123,8 +122,9 @@ $ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ----
 
 * Required tools
-** The tutorial based on https://www.qemu.org[Qemu]
-** Windows users should take a look at https://chocolatey.org[Chocolatey], macOS users at https://brew.sh[brew] to install Qemu
+** The tutorial is based on https://www.qemu.org[QEMU]
+** The kernel requires https://nasm.us/[NASM] for SMP
+** Windows users should take a look at https://chocolatey.org[Chocolatey], macOS users at https://brew.sh[brew] to install QEMU
 ** Here Ubuntu is used as host system
 
 [source, shell]
@@ -134,7 +134,7 @@ $ sudo apt-get install qemu-system-x86 nasm git
 
 == Build your first RustHermit Application
 
-* Use our demo application as start point
+* Use our demo application as starting point
 
 [source, shell]
 ----
@@ -144,7 +144,7 @@ $ git submodule init
 $ git submodule update
 ----
 
-* Cargo is the Rust package manager and already installed with your toolchain
+* Cargo is the Rust package manager, already installed with your toolchain
 * `Cargo.toml` is describing your dependencies
 * `hermit-sys` is a helper crate to build the libOS.
 
@@ -206,7 +206,7 @@ $ cargo build -Zbuild-std=core,alloc,std,panic_abort \
 ----
 
 * `-Zbuild-std` rebuilds the `libstd` and `-Zbuild-std-features` the compiler buitins (e.g. `memcpy`)
-* To run RustyHermint in Qemu a bootloader is required.
+* To run RustyHermint in QEMU a bootloader is required.
 ** Already part of the repository
 ** Build bootloader
 
@@ -214,13 +214,13 @@ $ cargo build -Zbuild-std=core,alloc,std,panic_abort \
 ----
 $ cd loader
 $ cargo xtask build --arch x86_64
-$ cd --
+$ cd ..
 ----
 
 === Run `HelloWorld`
 
-* Test RustyHermit in Qemu
-** Add flag `--enable-kvm` to accelerate virtualization
+* Test RustyHermit in QEMU
+** Add flag `-enable-kvm` to accelerate virtualization
 *** Requires Linux
 
 [source, shell]
@@ -255,7 +255,7 @@ $ cargo build -Zbuild-std=core,alloc,std,panic_abort \
     --target x86_64-unknown-hermit --release
 $ cd loader
 $ cargo xtask build --arch x86_64 --release
-$ cd -
+$ cd ..
 $ qemu-system-x86_64 -smp 1 -display none -m 1G -serial stdio \
     -cpu qemu64,apic,fsgsbase,rdtscp,xsave,xsaveopt,fxsr \
     -device isa-debug-exit,iobase=0xf4,iosize=0x04 \
@@ -274,7 +274,7 @@ $ -rwxr-xr-x  4747296 target/x86_64-unknown-hermit/release/hello_world
 
 == Concurrent applications
 
-* The calculation of PI is used
+* Calculating pi via integration
 
 image::images/pi.png[width=40%]
 
@@ -294,7 +294,7 @@ for i in 0..num_steps {
 
 === Naive solution
 
-* Rust: It exists only one owner of an object
+* Rust: There is only one owner of an object
 ** No races possible
 ** Compiler is able to detect it
 
@@ -319,7 +319,7 @@ let threads: Vec<_> = (0..nthreads)
 
 === Compiler error
 
-* Compiler is able to detect the error
+* The compiler is able to detect the error
 
 [source, Rust]
 ----
@@ -331,7 +331,7 @@ error: cannot assign to immutable captured outer variable
 
 === Concurrent solution (I)
 
-* Using threads of Rust`s `libstd`
+* Using threads of Rust's `libstd`
 
 [source, Rust]
 ----
@@ -407,8 +407,8 @@ Pi: 3.14159265358991
 == HTTPD
 
 * https://crates.io[crates.io] is Rust's community registry for publishing open-source code
-** Here: Using of https://crates.io/crates/tiny_http[tiny_http]
-* Change `Cargo.toml` like https://crates.io/crates/tiny_http[tiny_http's] README and add options to enable TCP & DHCP support
+** Here: Using https://crates.io/crates/tiny_http[tiny_http]
+* Change `Cargo.toml` according to https://crates.io/crates/tiny_http[tiny_http's] README and add options to enable TCP & DHCP support
 
 [source, TOML]
 ----
@@ -470,8 +470,8 @@ $ cargo build -Zbuild-std=core,alloc,std,panic_abort \
     --target x86_64-unknown-hermit          
 ----
 
-* Start Qemu with the emulation of the network card RTL8139
-** Forward any requests at the host port 8000 to the quest
+* Start QEMU with the emulation of the network card RTL8139
+** Forward any requests at the host port 8000 to the guest
 
 [source, shell]
 ----
@@ -516,8 +516,8 @@ eth0 o     o tap0
 === Create bridge
 
 * *Assumption:* `eth0` is connected to the physical link and maintains the IP address of the host
-** Modern Linux use often another name for `eth0`
-* At first, create bridge and connect `eth0` to the bridge
+** Modern Linux often use another name for `eth0`
+* First create a bridge and connect `eth0` to it
 ** Please note that these commands will *drop internet connectivity* of your machine.
 
 [source, shell]
@@ -585,10 +585,10 @@ Hello from RustyHermit 🦀
 == Work in progress
 
 * Support of Virtio-FS
-* Support of microVMs (e.g. https://qemu.readthedocs.io/en/latest/system/i386/microvm.html[Qemu's microvm’virtual platform])
+* Support of microVMs (e.g. https://qemu.readthedocs.io/en/latest/system/i386/microvm.html[QEMU's microvm’virtual platform])
 ** Thanks to Yu Duan
 * Container orchestration
-** Realization of an https://github.com/hermitcore/runh[own container spawner]
+** Realization of our https://github.com/hermitcore/runh[own container spawner]
 ** Base on the https://github.com/opencontainers/runtime-spec[OCI runtime specification]
 ** Thanks to Jonas Schroeder
 

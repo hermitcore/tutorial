@@ -1,6 +1,6 @@
 # RustyHermit Tutorial
 
-This repository includes a RustyHermit tutorial and a small web server to make the slides available.
+This repository contains a RustyHermit tutorial and a small web server to make the slides available.
 
 Please read the README of [RustyHermit](https://github.com/hermitcore/rusty-hermit-rs) for more information about RustyHermit.
 
@@ -21,7 +21,7 @@ Please read the README of [RustyHermit](https://github.com/hermitcore/rusty-herm
 ```
 $ cd slides
 $ make
-$ cd -
+$ cd ..
 ```
 
 ### Build bootloader
@@ -29,6 +29,7 @@ $ cd -
 ```
 $ cd loader
 $ cargo xtask build --arch x86_64 --release
+$ cd ..
 ```
 
 ### Build RustyHermit web server
@@ -56,7 +57,7 @@ $ qemu-system-x86_64 \
 
 ### Read the tutorial
 
-Open with your browser `http://127.0.0.1:9975/` and read the tutorial.
+Open `http://127.0.0.1:9975/` with your browser and read the tutorial.
 
 ## License
 
