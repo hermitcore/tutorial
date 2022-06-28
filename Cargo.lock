@@ -226,9 +226,9 @@ dependencies = [
 
 [[package]]
 name = "hermit-sys"
-version = "0.2.3"
+version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "02dd2fb0786d2adf2d6c55288deb9f2565be0b194eb06d5a566db275f9bde856"
+checksum = "ca1e24518f146a6c720973a169bb974ce1293b6411f3a210b232606679d37c23"
 dependencies = [
  "aarch64",
  "async-task",
