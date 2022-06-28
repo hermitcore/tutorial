@@ -2,6 +2,8 @@ name: 'Build image'
 on:
   push:
     branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 env:
   CARGO_TERM_COLOR: always
@@ -59,7 +61,8 @@ jobs:
         CMD ["/hermit/httpd"]
         END
     - name: Build and push container
-      uses: docker/build-push-action@v3
+      uses: docker/build-push-action@v3i
+      if: success() && github.ref == 'refs/heads/main'
       with:
         context: .
         push: true
